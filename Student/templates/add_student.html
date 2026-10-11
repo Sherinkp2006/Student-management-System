@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        /* Automatically distributes fields into a responsive, widescreen 2-column format to maximize single screen fit */
+        form .form-grid-wrapper {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+            gap: 1.25rem;
+        }
+        @media (min-width: 768px) {
+            form .form-grid-wrapper {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        form p {
+            display: flex;
+            flex-direction: column;
+        }
+        form p label {
+            display: block;
+            font-family: monospace;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            color: #a3a3a3;
+            margin-bottom: 0.5rem;
+        }
+        form p input, form p select, form p textarea {
+            width: 100%;
+            padding: 0.85rem 1.25rem;
+            background-color: #050507;
+            border: 1px solid #262626;
+            border-radius: 14px;
+            color: #e0e7ff;
+            font-family: monospace;
+            font-size: 0.9rem;
+            transition: all 0.25s ease;
+        }
+        form p input:focus, form p select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen w-full flex items-center justify-center p-0 font-sans relative bg-cover bg-center bg-no-repeat" style="background-image: url('https://fileserver.teachstarter.com/thumbnails/37906-7-tips-for-welcoming-a-new-student-thumbnail-0-600x400.png');">
+
+    <div class="absolute inset-0 bg-gradient-to-b from-neutral-950/20 via-transparent to-neutral-950/40 z-0"></div>
+
+    <div class="w-full min-h-screen flex flex-col justify-between p-4 md:p-10 relative z-10">
+
+        <header class="w-full max-w-6xl mx-auto bg-neutral-900/80 backdrop-blur-md border border-neutral-800/60 rounded-2xl p-6 flex justify-between items-center shrink-0 shadow-xl relative z-10">
+            <span class="text-xs font-mono tracking-[0.3em] text-neutral-300 font-bold uppercase">// ADDING NEW STUDENT</span>
+            <a href="{% url 'list_students' %}" class="px-4 py-2.5 bg-neutral-950 hover:bg-neutral-900 text-xs text-emerald-400 font-mono font-bold border border-neutral-850 hover:border-emerald-500/30 rounded-xl transition-all shadow-inner">
+                📋 View Student Lists
+            </a>
+        </header>
+
+        <div class="bg-neutral-900/85 backdrop-blur-xl border border-neutral-800 rounded-[2.5rem] p-6 md:p-10 w-full max-w-6xl mx-auto my-6 shadow-[0_25px_70px_-10px_rgba(0,0,0,0.95)] flex-1 flex flex-col justify-between animate__animated animate__fadeInUp animate__fast relative z-10">
+
+            <div class="mb-6 pb-4 border-b border-neutral-800 shrink-0">
+                <h1 class="text-3xl md:text-4xl font-black text-white uppercase tracking-wide">Add New Student</h1>
+                <p class="text-xs font-mono text-neutral-400/70 mt-1">Enter student details to the given blanks below.</p>
+            </div>
+
+            <form method="post" class="space-y-6 flex-1 flex flex-col justify-between">
+                {% csrf_token %}
+
+                <div class="p-6 md:p-8 bg-neutral-950/60 rounded-3xl border border-neutral-850 shadow-inner flex-1 overflow-y-auto max-h-[50vh]">
+                    <div class="form-grid-wrapper">
+                        {{ form.as_p }}
+                    </div>
+                </div>
+
+                <div class="shrink-0 pt-4 border-t border-neutral-850">
+                    <div class="flex flex-col sm:flex-row gap-3 justify-end items-center">
+                        <a href="{% url 'home' %}" class="w-full sm:w-auto text-center px-8 py-4 bg-neutral-950 hover:bg-neutral-850 text-neutral-400 font-mono font-bold rounded-xl text-xs border border-neutral-900 transition-all uppercase tracking-wider">
+                            Cancel Session
+                        </a>
+                        <button type="submit" name="Save_and_refresh" class="w-full sm:w-auto px-6 py-4 bg-neutral-950 hover:bg-neutral-800 text-neutral-400 hover:text-white font-mono font-bold rounded-xl tracking-wider text-[10px] uppercase border border-neutral-850 transition-all">
+                            Save & Add Another
+                        </button>
+                        <button type="submit" name="Save_details" class="w-full sm:w-64 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-mono font-black rounded-xl tracking-wider text-xs uppercase transition-all shadow-lg shadow-indigo-950/40">
+                            Submit Details
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+        <div class="shrink-0"></div>
+    </div>
+
+</body>
+</html>

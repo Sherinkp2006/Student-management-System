@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        .full-screen-bg {
+            background-image: url('https://images.unsplash.com/photo-1624969862644-791f3dc98927?auto=format&fit=crop&w=1920&q=80');
+        }
+    </style>
+</head>
+<body class="full-screen-bg bg-cover bg-center bg-no-repeat min-h-screen w-full flex items-center justify-center p-0 font-sans">
+
+    <div class="w-full min-h-screen bg-gradient-to-b from-neutral-950/20 via-transparent to-neutral-950/40 flex items-center justify-center p-4">
+
+        <div class="bg-neutral-900/85 backdrop-blur-xl border border-neutral-800/80 p-10 md:p-12 rounded-[2.5rem] shadow-[0_25px_70px_-10px_rgba(0,0,0,0.95)] w-full max-w-md animate__animated animate__zoomIn animate__faster relative z-10">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-black uppercase tracking-wide text-white">User Login</h2>
+                <p class="text-neutral-500 font-mono text-xs mt-1.5">Provide Username and Passowrd for validation</p>
+            </div>
+
+            {% if messages %}
+                <div class="mb-5 space-y-2" role="alert" aria-live="polite">
+                    {% for message in messages %}
+                        <p class="text-center text-sm font-mono {% if message.tags == 'error' %}text-rose-400{% else %}text-emerald-400{% endif %}">
+                            {{ message }}
+                        </p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="POST" class="space-y-5">
+                {% csrf_token %}
+
+                <div>
+                    <label for="username" class="block text-[11px] font-mono font-bold uppercase tracking-widest text-neutral-400 mb-2">Username Flag:</label>
+                    <input type="text" id="username" name="username" required
+                           class="w-full px-4 py-3.5 bg-neutral-950 border border-neutral-900 text-indigo-400 font-mono focus:outline-none focus:border-indigo-500 rounded-xl transition-all placeholder-neutral-800 shadow-inner"
+                           placeholder="user_node">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-[11px] font-mono font-bold uppercase tracking-widest text-neutral-400 mb-2">Password Key:</label>
+                    <input type="password" id="password" name="password" required
+                           class="w-full px-4 py-3.5 bg-neutral-950 border border-neutral-900 text-indigo-400 font-mono focus:outline-none focus:border-indigo-500 rounded-xl transition-all placeholder-neutral-800 shadow-inner"
+                           placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="w-full py-4 mt-2 bg-gradient-to-r from-neutral-800 to-neutral-950 hover:from-neutral-700 hover:to-neutral-900 text-white font-mono font-bold border border-neutral-850 rounded-xl text-xs tracking-widest uppercase transition-all shadow-md">
+                    Authorize
+                </button>
+            </form>
+
+            <div class="mt-10 pt-6 border-t border-neutral-900 text-center">
+                <a href="{% url 'register' %}" class="group inline-flex items-center gap-2 text-xs font-mono tracking-wider text-neutral-500 hover:text-indigo-400 transition-colors uppercase font-bold">
+                    <span>New User?</span>
+                    <span class="underline decoration-indigo-500 underline-offset-4">Register Account</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

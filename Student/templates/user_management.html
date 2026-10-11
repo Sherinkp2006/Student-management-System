@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-neutral-950 text-neutral-100 font-sans">
+    <main class="mx-auto max-w-7xl space-y-8 p-5 md:p-10">
+        <header class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-neutral-800 bg-neutral-900 p-6">
+            <div>
+                <p class="font-mono text-xs uppercase tracking-[0.3em] text-indigo-400">Administrator controls</p>
+                <h1 class="mt-2 text-3xl font-black uppercase">User Management</h1>
+                <p class="mt-2 text-sm text-neutral-400">Create accounts, manage access, and review account status.</p>
+            </div>
+            <div class="flex gap-3">
+                <a href="{% url 'home' %}" class="rounded-lg border border-neutral-700 px-4 py-2 text-sm hover:border-indigo-400">Home</a>
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="rounded-lg border border-neutral-700 px-4 py-2 text-sm hover:border-rose-400">Log out</button>
+                </form>
+            </div>
+        </header>
+
+        {% if messages %}
+            <div class="space-y-2" role="status" aria-live="polite">
+                {% for message in messages %}
+                    <p class="rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm {% if message.tags == 'error' %}text-rose-300{% else %}text-emerald-300{% endif %}">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="User totals">
+            <div class="rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
+                <p class="text-xs uppercase tracking-widest text-neutral-400">All accounts</p>
+                <p class="mt-2 text-3xl font-black">{{ user_count }}</p>
+            </div>
+            <div class="rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
+                <p class="text-xs uppercase tracking-widest text-neutral-400">Active accounts</p>
+                <p class="mt-2 text-3xl font-black text-emerald-300">{{ active_user_count }}</p>
+            </div>
+            <div class="rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
+                <p class="text-xs uppercase tracking-widest text-neutral-400">Staff administrators</p>
+                <p class="mt-2 text-3xl font-black text-indigo-300">{{ staff_count }}</p>
+            </div>
+            <div class="rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
+                <p class="text-xs uppercase tracking-widest text-neutral-400">Superusers</p>
+                <p class="mt-2 text-3xl font-black text-amber-300">{{ superuser_count }}</p>
+            </div>
+        </section>
+
+        <section class="rounded-2xl border border-neutral-800 bg-neutral-900 p-6">
+            <h2 class="text-xl font-bold">Create account</h2>
+            <p class="mt-1 text-sm text-neutral-400">Passwords are validated using Django's configured password rules.</p>
+            <form method="POST" class="mt-5 grid gap-4 md:grid-cols-2">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="md:col-span-2 text-sm text-rose-300">{{ form.non_field_errors }}</div>
+                {% endif %}
+                <div>
+                    <label for="{{ form.username.id_for_label }}" class="mb-1 block text-sm text-neutral-300">Username</label>
+                    {{ form.username }}
+                    {{ form.username.errors }}
+                </div>
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="mb-1 block text-sm text-neutral-300">Email</label>
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </div>
+                <div>
+                    <label for="{{ form.password1.id_for_label }}" class="mb-1 block text-sm text-neutral-300">Password</label>
+                    {{ form.password1 }}
+                    {{ form.password1.errors }}
+                </div>
+                <div>
+                    <label for="{{ form.password2.id_for_label }}" class="mb-1 block text-sm text-neutral-300">Confirm password</label>
+                    {{ form.password2 }}
+                    {{ form.password2.errors }}
+                </div>
+                <div>
+                    <label for="{{ form.role.id_for_label }}" class="mb-1 block text-sm text-neutral-300">Account role</label>
+                    {{ form.role }}
+                    {{ form.role.errors }}
+                </div>
+                <div class="flex items-end">
+                    <button type="submit" class="rounded-lg bg-indigo-600 px-5 py-3 text-sm font-bold hover:bg-indigo-500">Create account</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900">
+            <div class="border-b border-neutral-800 p-6">
+                <h2 class="text-xl font-bold">Accounts</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-[800px] text-left text-sm">
+                    <thead class="bg-neutral-950 text-xs uppercase tracking-wider text-neutral-400">
+                        <tr>
+                            <th class="px-5 py-4">Username</th>
+                            <th class="px-5 py-4">Email</th>
+                            <th class="px-5 py-4">Status</th>
+                            <th class="px-5 py-4">Role</th>
+                            <th class="px-5 py-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-neutral-800">
+                        {% for managed_user in users %}
+                            <tr>
+                                <td class="px-5 py-4 font-semibold">
+                                    {{ managed_user.username }}
+                                    {% if managed_user.pk == user.pk %}<span class="ml-2 text-xs text-indigo-300">(you)</span>{% endif %}
+                                </td>
+                                <td class="px-5 py-4 text-neutral-300">{{ managed_user.email|default:"—" }}</td>
+                                <td class="px-5 py-4">
+                                    {% if managed_user.is_active %}
+                                        <span class="text-emerald-300">Active</span>
+                                    {% else %}
+                                        <span class="text-rose-300">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-5 py-4">
+                                    {% if managed_user.is_superuser %}Superuser
+                                    {% elif managed_user.is_staff %}Staff
+                                    {% else %}User
+                                    {% endif %}
+                                </td>
+                                <td class="px-5 py-4">
+                                    {% if managed_user.pk != user.pk %}
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <form method="POST" action="{% url 'manage_user' managed_user.pk %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="role">
+                                                <select name="role" aria-label="Role for {{ managed_user.username }}" class="rounded-lg border border-neutral-700 bg-neutral-950 px-2 py-2">
+                                                    <option value="user" {% if not managed_user.is_staff %}selected{% endif %}>User</option>
+                                                    <option value="staff" {% if managed_user.is_staff and not managed_user.is_superuser %}selected{% endif %}>Staff</option>
+                                                    <option value="superuser" {% if managed_user.is_superuser %}selected{% endif %}>Superuser</option>
+                                                </select>
+                                                <button type="submit" class="rounded-lg border border-indigo-500/60 px-3 py-2 text-indigo-200 hover:bg-indigo-500/10">Save role</button>
+                                            </form>
+                                            <form method="POST" action="{% url 'manage_user' managed_user.pk %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="{% if managed_user.is_active %}deactivate{% else %}activate{% endif %}">
+                                                <button type="submit" class="rounded-lg border border-amber-500/60 px-3 py-2 text-amber-200 hover:bg-amber-500/10">{% if managed_user.is_active %}Deactivate{% else %}Activate{% endif %}</button>
+                                            </form>
+                                            <form method="POST" action="{% url 'manage_user' managed_user.pk %}" onsubmit="return confirm('Permanently delete this account?');">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="delete">
+                                                <button type="submit" class="rounded-lg border border-rose-500/60 px-3 py-2 text-rose-200 hover:bg-rose-500/10">Delete</button>
+                                            </form>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-neutral-500">Self-management disabled</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="5" class="px-5 py-8 text-center text-neutral-400">No user accounts found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

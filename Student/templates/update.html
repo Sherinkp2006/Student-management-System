@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Student Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        /* Automatically distributes form fields into a responsive, widescreen 2-column format */
+        form .form-grid-wrapper {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+            gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            form .form-grid-wrapper {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        form p {
+            display: flex;
+            flex-direction: column;
+        }
+        form p label {
+            display: block;
+            font-family: monospace;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 700;
+            color: #a3a3a3;
+            margin-bottom: 0.75rem;
+        }
+        /* UPSCALED INPUT BOXES: Expanded sizes and font settings */
+        form p input, form p select, form p textarea {
+            width: 100%;
+            padding: 1.1rem 1.5rem; /* Increased inner space for a bigger box feel */
+            background-color: #050507;
+            border: 1px solid #262626;
+            border-radius: 16px;
+            color: #e0e7ff;
+            font-family: monospace;
+            font-size: 1rem; /* Increased text size inside inputs */
+            transition: all 0.25s ease;
+        }
+        form p input:focus, form p select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.25);
+        }
+    </style>
+</head>
+<body class="min-h-screen w-full flex items-center justify-center p-0 font-sans relative bg-cover bg-center bg-no-repeat" style="background-image: url('https://fileserver.teachstarter.com/thumbnails/37906-7-tips-for-welcoming-a-new-student-thumbnail-0-600x400.png');">
+
+    <div class="absolute inset-0 bg-gradient-to-b from-neutral-950/20 via-transparent to-neutral-950/40 z-0"></div>
+
+    <div class="w-full min-h-screen flex flex-col justify-between p-4 md:p-10 relative z-10">
+
+        <header class="w-full max-w-6xl mx-auto bg-neutral-900/80 backdrop-blur-md border border-neutral-800/60 rounded-2xl p-6 flex justify-between items-center shrink-0 shadow-xl relative z-10">
+            <span class="text-xs font-mono tracking-[0.3em] font-bold uppercase text-indigo-400">// CONFIGURATION MUTATOR</span>
+            <a href="{% url 'list_students' %}" class="px-4 py-2.5 bg-neutral-950 border border-neutral-800 hover:border-neutral-700 text-xs text-neutral-200 rounded-xl transition-all shadow-inner">
+                📋 View Student Lists
+            </a>
+        </header>
+
+        <div class="bg-neutral-900/85 backdrop-blur-xl border border-neutral-800 rounded-[2.5rem] p-6 md:p-10 w-full max-w-6xl mx-auto my-6 shadow-[0_25px_70px_-10px_rgba(0,0,0,0.95)] flex-1 flex flex-col justify-between animate__animated animate__fadeInUp animate__fast relative z-10">
+
+            <div class="mb-6 pb-4 border-b border-neutral-800 shrink-0">
+                <h1 class="text-3xl md:text-4xl font-black text-white uppercase tracking-wide">Update Profile Registry</h1>
+                <p class="text-xs font-mono text-indigo-400/70 mt-1">Overwrite to update details of : {{ student.student_name }}</p>
+            </div>
+
+            <form method="post" class="space-y-6 flex-1 flex flex-col justify-between">
+                {% csrf_token %}
+
+                <div class="p-6 md:p-8 bg-neutral-950/60 rounded-3xl border border-neutral-850 shadow-inner flex-1 overflow-y-auto max-h-[50vh]">
+                    <div class="form-grid-wrapper">
+                        {{ form.as_p }}
+                    </div>
+                </div>
+
+                <div class="shrink-0 pt-4 border-t border-neutral-850">
+                    <div class="flex flex-col sm:flex-row gap-3 justify-end items-center">
+                        <a href="{% url 'list_students' %}" class="w-full sm:w-auto text-center px-8 py-4 bg-neutral-950 hover:bg-neutral-850 text-neutral-400 font-mono font-bold rounded-xl text-xs border border-neutral-900 transition-all uppercase tracking-wider">
+                            Cancel Overwrite
+                        </a>
+                        <button type="submit" class="w-full sm:w-64 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-mono font-black rounded-xl tracking-wider text-xs uppercase transition-all shadow-lg shadow-indigo-950/40">
+                            Update the Changes ✓
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+        <div class="shrink-0"></div>
+    </div>
+
+</body>
+</html>
